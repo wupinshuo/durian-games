@@ -1,0 +1,149 @@
+<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- 榴莲渐变色 -->
+    <radialGradient id="durianGradient" cx="30%" cy="30%">
+      <stop offset="0%" style="stop-color:#FFFF80;stop-opacity:1" />
+      <stop offset="40%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="80%" style="stop-color:#FFA500;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF8C00;stop-opacity:1" />
+    </radialGradient>
+    
+    <!-- 刺的渐变 -->
+    <linearGradient id="spikeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E6B800;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#CC9900;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 阴影滤镜 -->
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="3" dy="4" stdDeviation="4" flood-color="rgba(0,0,0,0.25)"/>
+    </filter>
+    
+    <!-- 卡通发光效果 -->
+    <filter id="cartoonGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 榴莲主体 -->
+  <g transform="translate(40, 40)" filter="url(#shadow)">
+    <!-- 榴莲身体 - 更圆润可爱 -->
+    <ellipse cx="0" cy="2" rx="22" ry="18" fill="url(#durianGradient)" filter="url(#cartoonGlow)"/>
+    
+    <!-- 榴莲的尖刺 - 更夸张更萌 -->
+    <g fill="url(#spikeGradient)">
+      <!-- 顶部大刺 -->
+      <polygon points="-3,-14 0,-22 3,-14">
+        <animateTransform attributeName="transform" type="rotate" 
+                          values="0 0 -18;-5 0 -18;0 0 -18;5 0 -18;0 0 -18" 
+                          dur="3s" repeatCount="indefinite"/>
+      </polygon>
+      
+      <!-- 左上刺 -->
+      <polygon points="-12,-8 -18,-12 -10,-6">
+        <animateTransform attributeName="transform" type="rotate" 
+                          values="0 -14 -7;-3 -14 -7;0 -14 -7;3 -14 -7;0 -14 -7" 
+                          dur="2.5s" repeatCount="indefinite"/>
+      </polygon>
+      
+      <!-- 右上刺 -->
+      <polygon points="10,-6 18,-12 12,-8">
+        <animateTransform attributeName="transform" type="rotate" 
+                          values="0 14 -7;3 14 -7;0 14 -7;-3 14 -7;0 14 -7" 
+                          dur="2.8s" repeatCount="indefinite"/>
+      </polygon>
+      
+      <!-- 左中刺 -->
+      <polygon points="-18,-2 -24,2 -16,4">
+        <animateTransform attributeName="transform" type="rotate" 
+                          values="0 -20 1;-4 -20 1;0 -20 1;4 -20 1;0 -20 1" 
+                          dur="3.2s" repeatCount="indefinite"/>
+      </polygon>
+      
+      <!-- 右中刺 -->
+      <polygon points="16,4 24,2 18,-2">
+        <animateTransform attributeName="transform" type="rotate" 
+                          values="0 20 1;4 20 1;0 20 1;-4 20 1;0 20 1" 
+                          dur="2.7s" repeatCount="indefinite"/>
+      </polygon>
+      
+      <!-- 左下刺 -->
+      <polygon points="-12,12 -18,18 -8,16">
+        <animateTransform attributeName="transform" type="rotate" 
+                          values="0 -10 14;-3 -10 14;0 -10 14;3 -10 14;0 -10 14" 
+                          dur="2.9s" repeatCount="indefinite"/>
+      </polygon>
+      
+      <!-- 右下刺 -->
+      <polygon points="8,16 18,18 12,12">
+        <animateTransform attributeName="transform" type="rotate" 
+                          values="0 13 14;3 13 14;0 13 14;-3 13 14;0 13 14" 
+                          dur="3.1s" repeatCount="indefinite"/>
+      </polygon>
+      
+      <!-- 底部刺 -->
+      <polygon points="-2,16 0,24 2,16">
+        <animateTransform attributeName="transform" type="rotate" 
+                          values="0 0 20;-4 0 20;0 0 20;4 0 20;0 0 20" 
+                          dur="2.4s" repeatCount="indefinite"/>
+      </polygon>
+    </g>
+    
+    <!-- 可爱的表情 -->
+    <g>
+      <!-- 眼睛 -->
+      <ellipse cx="-6" cy="-2" rx="2.5" ry="3" fill="#333">
+        <animate attributeName="ry" values="3;0.5;3" dur="3s" repeatCount="indefinite"/>
+      </ellipse>
+      <ellipse cx="6" cy="-2" rx="2.5" ry="3" fill="#333">
+        <animate attributeName="ry" values="3;0.5;3" dur="3s" repeatCount="indefinite"/>
+      </ellipse>
+      
+      <!-- 眼中高光 -->
+      <ellipse cx="-5" cy="-3" rx="0.8" ry="1" fill="white" opacity="0.8"/>
+      <ellipse cx="7" cy="-3" rx="0.8" ry="1" fill="white" opacity="0.8"/>
+      
+      <!-- 嘴巴 - 微笑 -->
+      <path d="M-4,4 Q0,8 4,4" stroke="#333" stroke-width="2" fill="none" stroke-linecap="round"/>
+      
+      <!-- 脸红 -->
+      <ellipse cx="-12" cy="2" rx="3" ry="2" fill="#FFB6C1" opacity="0.6">
+        <animate attributeName="opacity" values="0.6;0.9;0.6" dur="2s" repeatCount="indefinite"/>
+      </ellipse>
+      <ellipse cx="12" cy="2" rx="3" ry="2" fill="#FFB6C1" opacity="0.6">
+        <animate attributeName="opacity" values="0.6;0.9;0.6" dur="2s" repeatCount="indefinite"/>
+      </ellipse>
+    </g>
+    
+    <!-- 榴莲纹理线条 -->
+    <g stroke="#B8860B" stroke-width="1.5" fill="none" opacity="0.4" stroke-linecap="round">
+      <path d="M-15,-4 Q0,-6 15,-4"/>
+      <path d="M-15,2 Q0,4 15,2"/>
+      <path d="M-15,8 Q0,10 15,8"/>
+    </g>
+    
+    <!-- 卡通高光 -->
+    <ellipse cx="-8" cy="-6" rx="4" ry="3" fill="#FFFF99" opacity="0.5" transform="rotate(-20 -8 -6)"/>
+    
+    <!-- 可爱的小星星装饰 -->
+    <g fill="#FFD700" opacity="0.7">
+      <path d="M-25,-10 L-23,-8 L-25,-6 L-27,-8 Z">
+        <animateTransform attributeName="transform" type="rotate" 
+                          values="0 -25 -8;360 -25 -8" dur="4s" repeatCount="indefinite"/>
+      </path>
+      <path d="M25,8 L27,10 L25,12 L23,10 Z">
+        <animateTransform attributeName="transform" type="rotate" 
+                          values="0 25 10;-360 25 10" dur="5s" repeatCount="indefinite"/>
+      </path>
+    </g>
+  </g>
+  
+  <!-- 底部可爱阴影 -->
+  <ellipse cx="40" cy="70" rx="20" ry="4" fill="rgba(0,0,0,0.1)">
+    <animate attributeName="rx" values="20;22;20" dur="3s" repeatCount="indefinite"/>
+  </ellipse>
+</svg>
