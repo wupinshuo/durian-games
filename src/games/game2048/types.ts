@@ -40,6 +40,10 @@ export interface Game2048State {
   canUndo: boolean;
   /** 移动次数 */
   moveCount: number;
+  /** 当前游戏达到的最高数字 */
+  highestTile: number;
+  /** 历史最高数字 */
+  bestTile: number;
 }
 
 /** 游戏历史状态（用于撤销功能） */

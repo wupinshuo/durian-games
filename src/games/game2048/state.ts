@@ -72,6 +72,8 @@ export class Game2048StateManager {
       endTime: null,
       canUndo: false,
       moveCount: 0,
+      highestTile: 0,
+      bestTile: this.loadBestTile(),
     };
   }
 
@@ -107,6 +109,9 @@ export class Game2048StateManager {
     for (let i = 0; i < this.config.initialCells; i++) {
       this.addRandomCell();
     }
+
+    // 更新最高数字
+    this.updateHighestTile();
 
     this.state.status = "playing";
     this.state.startTime = Date.now();
@@ -201,6 +206,9 @@ export class Game2048StateManager {
       // 检查是否达到2048
       reached2048 = this.checkFor2048();
 
+      // 更新最高数字
+      this.updateHighestTile();
+
       // 添加新单元格
       this.addRandomCell();
 
@@ -211,6 +219,12 @@ export class Game2048StateManager {
       if (this.state.score > this.state.bestScore) {
         this.state.bestScore = this.state.score;
         this.saveBestScore(this.state.bestScore);
+      }
+
+      // 更新历史最高数字
+      if (this.state.highestTile > this.state.bestTile) {
+        this.state.bestTile = this.state.highestTile;
+        this.saveBestTile(this.state.bestTile);
       }
     } else {
       // 如果没有移动，移除历史记录
@@ -337,6 +351,25 @@ export class Game2048StateManager {
     }
 
     return { newLine: result, score };
+  }
+
+  /**
+   * 更新最高数字
+   */
+  private updateHighestTile(): void {
+    let currentHighest = 0;
+    const size = this.config.boardSize;
+
+    for (let row = 0; row < size; row++) {
+      for (let col = 0; col < size; col++) {
+        const value = this.state.board[row][col].value;
+        if (value > currentHighest) {
+          currentHighest = value;
+        }
+      }
+    }
+
+    this.state.highestTile = currentHighest;
   }
 
   /**
@@ -498,6 +531,29 @@ export class Game2048StateManager {
   private saveBestScore(score: number): void {
     try {
       localStorage.setItem("game2048-best-score", score.toString());
+    } catch {
+      // 忽略存储错误
+    }
+  }
+
+  /**
+   * 加载最高数字
+   */
+  private loadBestTile(): number {
+    try {
+      const saved = localStorage.getItem("game2048-best-tile");
+      return saved ? parseInt(saved, 10) : 0;
+    } catch {
+      return 0;
+    }
+  }
+
+  /**
+   * 保存最高数字
+   */
+  private saveBestTile(tile: number): void {
+    try {
+      localStorage.setItem("game2048-best-tile", tile.toString());
     } catch {
       // 忽略存储错误
     }

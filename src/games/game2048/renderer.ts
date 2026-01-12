@@ -166,6 +166,14 @@ export class Game2048Renderer {
         <div class="game2048-score-label">最高分</div>
         <div class="game2048-score-value">${state.bestScore.toLocaleString()}</div>
       </div>
+      <div class="game2048-score">
+        <div class="game2048-score-label">最高数字</div>
+        <div class="game2048-score-value">${state.highestTile || "-"}</div>
+      </div>
+      <div class="game2048-score">
+        <div class="game2048-score-label">历史最高</div>
+        <div class="game2048-score-value">${state.bestTile || "-"}</div>
+      </div>
     `;
   }
 
@@ -365,8 +373,10 @@ export class Game2048Renderer {
       .game2048-header {
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-start;
         margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 15px;
       }
 
       .game2048-title {
@@ -374,30 +384,34 @@ export class Game2048Renderer {
         font-weight: bold;
         color: #776e65;
         margin: 0;
+        flex-shrink: 0;
       }
 
       .game2048-scores {
-        display: flex;
-        gap: 10px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        min-width: 200px;
       }
 
       .game2048-score {
         background: #bbada0;
-        padding: 8px 16px;
+        padding: 6px 12px;
         border-radius: 6px;
         text-align: center;
-        min-width: 60px;
+        min-width: 80px;
       }
 
       .game2048-score-label {
-        font-size: 12px;
+        font-size: 11px;
         color: #eee4da;
         text-transform: uppercase;
         font-weight: bold;
+        margin-bottom: 2px;
       }
 
       .game2048-score-value {
-        font-size: 18px;
+        font-size: 16px;
         color: white;
         font-weight: bold;
       }
@@ -575,8 +589,34 @@ export class Game2048Renderer {
           max-width: 100%;
         }
 
+        .game2048-header {
+          flex-direction: column;
+          align-items: center;
+          gap: 15px;
+        }
+
         .game2048-title {
           font-size: 36px;
+        }
+
+        .game2048-scores {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 6px;
+          width: 100%;
+          max-width: 280px;
+        }
+
+        .game2048-score {
+          padding: 4px 8px;
+          min-width: auto;
+        }
+
+        .game2048-score-label {
+          font-size: 10px;
+        }
+
+        .game2048-score-value {
+          font-size: 14px;
         }
 
         .game2048-board {
@@ -624,13 +664,29 @@ export class Game2048Renderer {
         }
 
         .game2048-header {
-          flex-direction: column;
-          gap: 15px;
-          align-items: center;
+          gap: 10px;
         }
 
-        .game2048-controls {
-          justify-content: center;
+        .game2048-title {
+          font-size: 28px;
+        }
+
+        .game2048-scores {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 4px;
+          max-width: 240px;
+        }
+
+        .game2048-score {
+          padding: 3px 6px;
+        }
+
+        .game2048-score-label {
+          font-size: 9px;
+        }
+
+        .game2048-score-value {
+          font-size: 12px;
         }
 
         .game2048-tile {
