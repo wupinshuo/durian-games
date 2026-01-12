@@ -1,6 +1,7 @@
 "use client";
 
 import React, { Component, ReactNode } from "react";
+import { getGameChineseName } from "@/lib/game-names";
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -117,7 +118,7 @@ function GameErrorFallback({ error, gameId, onRetry }: GameErrorFallbackProps) {
         <h2 className="text-2xl font-bold text-gray-900 mb-2">游戏出现错误</h2>
         <p className="text-gray-600 mb-4">
           {gameId
-            ? `游戏 "${gameId}" 遇到了一个问题。`
+            ? `游戏 "${getGameChineseName(gameId)}" 遇到了一个问题。`
             : "游戏遇到了一个问题。"}
         </p>
 

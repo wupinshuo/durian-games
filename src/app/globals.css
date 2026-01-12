@@ -54,15 +54,17 @@ body {
 }
 
 .game-card {
-  @apply bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer border border-gray-200;
+  @apply bg-white rounded-lg shadow-md hover:shadow-lg transition-optimized cursor-pointer border border-gray-200 gpu-accelerated;
 }
 
 .game-card:hover {
-  @apply transform scale-105 transition-transform duration-200;
+  @apply transform transition-optimized;
+  transform: translateY(-2px) translateZ(0);
 }
 
 .game-card:active {
-  @apply transform scale-95;
+  @apply transform;
+  transform: translateY(0) scale(0.98) translateZ(0);
 }
 
 /* 游戏大厅网格布局 */
@@ -98,20 +100,20 @@ body {
 
 /* 按钮样式 */
 .btn-primary {
-  @apply bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+  @apply bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-optimized gpu-accelerated;
 }
 
 .btn-secondary {
-  @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+  @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-optimized gpu-accelerated;
 }
 
 .btn-danger {
-  @apply bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+  @apply bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-optimized gpu-accelerated;
 }
 
 /* 导航样式 */
 .nav-link {
-  @apply text-gray-600 hover:text-blue-600 font-medium transition-colors duration-200;
+  @apply text-gray-600 hover:text-blue-600 font-medium transition-optimized;
 }
 
 .nav-link.active {
@@ -183,8 +185,84 @@ body {
   }
 }
 
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translate3d(20px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .animate-pulse-slow {
   animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-slide-in-up {
+  animation: slideInUp 0.3s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.3s ease-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease-out;
+}
+
+/* 性能优化的过渡效果 */
+.transition-optimized {
+  transition-property: transform, opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.transition-optimized:hover {
+  transform: translateY(-2px);
+}
+
+/* 硬件加速 */
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
 }
 
 /* 游戏控制按钮 */

@@ -5,6 +5,8 @@ import { gameRegistry } from "@/lib/game-registry";
 import { scoreManager } from "@/lib/score-manager";
 import { GameMetadata } from "@/types/game";
 import { ResponsiveContainer, ResponsiveGrid } from "./responsive-layout";
+import { GameCardSkeleton } from "./loading-indicator";
+import { TransitionWrapper } from "./transition-wrapper";
 
 // 确保游戏注册在组件加载前完成
 import "@/lib/game-registration";
@@ -21,6 +23,7 @@ export function GameHall({ onGameSelect }: GameHallProps) {
   const [games, setGames] = useState<GameMetadata[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     // 加载游戏列表
@@ -49,7 +52,12 @@ export function GameHall({ onGameSelect }: GameHallProps) {
 
   const handleGameSelect = (gameId: string) => {
     console.log("选择游戏:", gameId);
-    onGameSelect(gameId);
+    setIsTransitioning(true);
+
+    // 添加短暂延迟以显示过渡效果
+    setTimeout(() => {
+      onGameSelect(gameId);
+    }, 150);
   };
 
   const getDifficultyColor = (difficulty: string) => {
@@ -89,11 +97,25 @@ export function GameHall({ onGameSelect }: GameHallProps) {
 
   if (isLoading) {
     return (
-      <div className="flex-1 flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">加载游戏列表...</p>
-        </div>
+      <div className="flex-1 py-6">
+        <ResponsiveContainer size="xl">
+          {/* 页面标题骨架 */}
+          <div className="text-center mb-6 md:mb-8">
+            <div className="h-8 bg-gray-200 rounded w-48 mx-auto mb-2 animate-pulse" />
+            <div className="h-5 bg-gray-200 rounded w-64 mx-auto animate-pulse" />
+          </div>
+
+          {/* 游戏卡片骨架 */}
+          <ResponsiveGrid
+            cols={{ default: 1, xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }}
+            gap={4}
+            className="mb-6 md:mb-8"
+          >
+            {Array.from({ length: 8 }).map((_, index) => (
+              <GameCardSkeleton key={index} />
+            ))}
+          </ResponsiveGrid>
+        </ResponsiveContainer>
       </div>
     );
   }
@@ -120,49 +142,61 @@ export function GameHall({ onGameSelect }: GameHallProps) {
     <div className="flex-1 py-6">
       <ResponsiveContainer size="xl">
         {/* 页面标题 */}
-        <div className="text-center mb-6 md:mb-8">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-            游戏大厅
-          </h1>
-          <p className="text-gray-600 text-base sm:text-lg">
-            选择一个游戏开始游玩
-          </p>
-        </div>
+        <TransitionWrapper isVisible={!isTransitioning} type="slideUp">
+          <div className="text-center mb-6 md:mb-8">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+              游戏大厅
+            </h1>
+            <p className="text-gray-600 text-base sm:text-lg">
+              选择一个游戏开始游玩
+            </p>
+          </div>
+        </TransitionWrapper>
 
         {/* 游戏列表 */}
-        {games.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-gray-400 text-6xl mb-4">🎮</div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">
-              暂无可用游戏
-            </h3>
-            <p className="text-gray-600">游戏正在开发中，敬请期待...</p>
-          </div>
-        ) : (
-          <ResponsiveGrid
-            cols={{ default: 1, xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }}
-            gap={4}
-            className="mb-6 md:mb-8"
-          >
-            {games.map((game) => (
-              <GameCard
-                key={game.id}
-                game={game}
-                onSelect={handleGameSelect}
-                getDifficultyColor={getDifficultyColor}
-                getDifficultyText={getDifficultyText}
-                getControlsText={getControlsText}
-              />
-            ))}
-          </ResponsiveGrid>
-        )}
+        <TransitionWrapper isVisible={!isTransitioning} type="fade">
+          {games.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="text-gray-400 text-6xl mb-4">🎮</div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                暂无可用游戏
+              </h3>
+              <p className="text-gray-600">游戏正在开发中，敬请期待...</p>
+            </div>
+          ) : (
+            <ResponsiveGrid
+              cols={{ default: 1, xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }}
+              gap={4}
+              className="mb-6 md:mb-8"
+            >
+              {games.map((game, index) => (
+                <TransitionWrapper
+                  key={game.id}
+                  isVisible={!isTransitioning}
+                  type="slideUp"
+                  duration={300 + index * 50} // 错开动画时间
+                >
+                  <GameCard
+                    game={game}
+                    onSelect={handleGameSelect}
+                    getDifficultyColor={getDifficultyColor}
+                    getDifficultyText={getDifficultyText}
+                    getControlsText={getControlsText}
+                  />
+                </TransitionWrapper>
+              ))}
+            </ResponsiveGrid>
+          )}
+        </TransitionWrapper>
 
         {/* 底部提示 */}
-        <div className="text-center">
-          <p className="text-sm text-gray-500">
-            更多游戏正在开发中，敬请期待更多精彩内容！
-          </p>
-        </div>
+        <TransitionWrapper isVisible={!isTransitioning} type="fade">
+          <div className="text-center">
+            <p className="text-sm text-gray-500">
+              更多游戏正在开发中，敬请期待更多精彩内容！
+            </p>
+          </div>
+        </TransitionWrapper>
       </ResponsiveContainer>
     </div>
   );
@@ -198,7 +232,7 @@ function GameCard({
 
   return (
     <div
-      className="relative bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer border border-gray-200 overflow-hidden group active:scale-95"
+      className="relative bg-white rounded-lg shadow-md hover:shadow-lg transition-optimized cursor-pointer border border-gray-200 overflow-hidden group active:scale-95 gpu-accelerated"
       onClick={() => onSelect(game.id)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -209,7 +243,8 @@ function GameCard({
           <img
             src={game.thumbnail}
             alt={game.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            loading="lazy"
           />
         ) : (
           <div className="text-white text-3xl sm:text-4xl">🎮</div>

@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { MobileMenu } from "./responsive-layout";
+import { getGameChineseName } from "@/lib/game-names";
 
 interface NavigationProps {
   currentView: "hall" | "game";
@@ -52,7 +53,9 @@ export function Navigation({
               {currentView === "game" && (
                 <div className="hidden sm:flex items-center space-x-2 text-sm text-gray-500">
                   <span>/</span>
-                  <span className="capitalize">{currentGameId}</span>
+                  <span>
+                    {currentGameId ? getGameChineseName(currentGameId) : "游戏"}
+                  </span>
                 </div>
               )}
             </div>
@@ -113,8 +116,8 @@ export function Navigation({
           {currentView === "game" && currentGameId && (
             <div className="border-t pt-4">
               <p className="text-sm text-gray-500 mb-2">当前游戏:</p>
-              <p className="font-medium text-gray-900 capitalize">
-                {currentGameId}
+              <p className="font-medium text-gray-900">
+                {currentGameId ? getGameChineseName(currentGameId) : "未知游戏"}
               </p>
               <button
                 type="button"

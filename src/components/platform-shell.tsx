@@ -6,6 +6,7 @@ import { Navigation } from "./navigation";
 import { GameHall } from "./game-hall";
 import { PlatformErrorBoundary } from "./platform-error-boundary";
 import { GameErrorBoundary } from "./game-error-boundary";
+import { PageTransition } from "./transition-wrapper";
 
 /**
  * 平台Shell组件
@@ -64,26 +65,28 @@ export function PlatformShell() {
 
         {/* 主内容区域 */}
         <main className="flex-1 flex flex-col">
-          {currentView === "hall" ? (
-            <GameHall onGameSelect={navigateToGame} />
-          ) : (
-            <GameErrorBoundary
-              gameId={currentGameId!}
-              onGameError={handleGameError}
-              onReturnToHall={navigateToHall}
-            >
-              <GameContainer
+          <PageTransition currentKey={currentView + (currentGameId || "")}>
+            {currentView === "hall" ? (
+              <GameHall onGameSelect={navigateToGame} />
+            ) : (
+              <GameErrorBoundary
                 gameId={currentGameId!}
-                onBackToHall={navigateToHall}
-              />
-            </GameErrorBoundary>
-          )}
+                onGameError={handleGameError}
+                onReturnToHall={navigateToHall}
+              >
+                <GameContainer
+                  gameId={currentGameId!}
+                  onBackToHall={navigateToHall}
+                />
+              </GameErrorBoundary>
+            )}
+          </PageTransition>
         </main>
 
         {/* 底部信息栏 */}
         <footer className="bg-white border-t border-gray-200 p-3 sm:p-4">
           <div className="max-w-6xl mx-auto text-center text-xs sm:text-sm text-gray-500">
-            网页游戏平台 - 模块化游戏体验
+            网页游戏平台 - 在线游戏体验
           </div>
         </footer>
       </div>

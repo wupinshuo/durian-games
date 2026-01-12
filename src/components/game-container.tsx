@@ -4,6 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { GameContainerImpl } from "@/lib/game-container";
 import { GameLoadOptions, GameScore } from "@/types/game";
 import { scoreManager } from "@/lib/score-manager";
+import { LoadingIndicator } from "./loading-indicator";
+import { getGameChineseName } from "@/lib/game-names";
 
 interface GameContainerProps {
   gameId: string;
@@ -25,7 +27,6 @@ export function GameContainer({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [highScore, setHighScore] = useState<GameScore | null>(null);
-  const [currentScore, setCurrentScore] = useState<number>(0);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -96,100 +97,107 @@ export function GameContainer({
     if (containerRef.current && gameContainerRef.current) {
       setError(null);
       setIsLoading(true);
+
       gameContainerRef.current
         .mountGame(gameId, loadOptions)
-        .then(() => setIsLoading(false))
-        .catch((err) => {
-          setError(err instanceof Error ? err.message : String(err));
+        .then(() => {
           setIsLoading(false);
+        })
+        .catch((err) => {
+          const errorMessage = err instanceof Error ? err.message : String(err);
+          setError(errorMessage);
+          setIsLoading(false);
+          console.error("Retry failed:", err);
         });
     }
   };
 
   return (
-    <div className="flex-1 flex flex-col bg-white">
-      {/* 游戏控制栏 */}
-      <div className="bg-gray-50 border-b border-gray-200 px-4 py-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <h2 className="text-lg font-semibold text-gray-900 capitalize">
-              {gameId}
-            </h2>
-            {isLoading && (
-              <div className="flex items-center space-x-2 text-sm text-gray-500">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
-                <span>加载中...</span>
-              </div>
-            )}
-          </div>
-
-          <div className="flex items-center space-x-4">
-            {/* 分数显示 */}
-            {highScore && (
-              <div className="flex items-center space-x-4 text-sm">
-                <div className="text-gray-600">
-                  <span className="font-medium">最高分:</span>{" "}
-                  <span className="font-bold text-blue-600">
-                    {highScore.score.toLocaleString()}
-                  </span>
+    <>
+      <div className="flex-1 flex flex-col bg-white">
+        {/* 游戏控制栏 */}
+        <div className="bg-gray-50 border-b border-gray-200 px-4 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <h2 className="text-lg font-semibold text-gray-900">
+                {getGameChineseName(gameId)}
+              </h2>
+              {isLoading && (
+                <div className="flex items-center space-x-2 text-sm text-gray-500">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
+                  <span>加载中...</span>
                 </div>
-              </div>
-            )}
-
-            <div className="flex items-center space-x-2">
-              {error && (
-                <button
-                  type="button"
-                  onClick={retryLoad}
-                  className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                >
-                  重试
-                </button>
               )}
-              <button
-                type="button"
-                onClick={onBackToHall}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
-              >
-                返回大厅
-              </button>
             </div>
-          </div>
-        </div>
-      </div>
 
-      {/* 游戏内容区域 */}
-      <div className="flex-1 relative">
-        {error ? (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
-            <div className="text-center">
-              <div className="text-red-500 text-4xl mb-4">⚠️</div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                游戏加载失败
-              </h3>
-              <p className="text-gray-600 mb-4 max-w-md">{error}</p>
-              <div className="space-x-2">
-                <button
-                  type="button"
-                  onClick={retryLoad}
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                >
-                  重新加载
-                </button>
+            <div className="flex items-center space-x-4">
+              {/* 分数显示 */}
+              {highScore && (
+                <div className="flex items-center space-x-4 text-sm">
+                  <div className="text-gray-600">
+                    <span className="font-medium">最高分:</span>{" "}
+                    <span className="font-bold text-blue-600">
+                      {highScore.score.toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex items-center space-x-2">
+                {error && (
+                  <button
+                    type="button"
+                    onClick={retryLoad}
+                    className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                  >
+                    重试
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={onBackToHall}
-                  className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
                 >
                   返回大厅
                 </button>
               </div>
             </div>
           </div>
-        ) : (
-          <div ref={containerRef} className="game-container" />
-        )}
+        </div>
+
+        {/* 游戏内容区域 */}
+        <div className="flex-1 relative">
+          {error ? (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
+              <div className="text-center">
+                <div className="text-red-500 text-4xl mb-4">⚠️</div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                  游戏加载失败
+                </h3>
+                <p className="text-gray-600 mb-4 max-w-md">{error}</p>
+                <div className="space-x-2">
+                  <button
+                    type="button"
+                    onClick={retryLoad}
+                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                  >
+                    重新加载
+                  </button>
+                  <button
+                    type="button"
+                    onClick={onBackToHall}
+                    className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+                  >
+                    返回大厅
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div ref={containerRef} className="game-container" />
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

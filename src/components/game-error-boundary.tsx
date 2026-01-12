@@ -2,6 +2,7 @@
 
 import React from "react";
 import { ErrorBoundary } from "./error-boundary";
+import { getGameChineseName } from "@/lib/game-names";
 
 interface GameErrorBoundaryProps {
   children: React.ReactNode;
@@ -77,15 +78,6 @@ function GameCrashScreen({
   onRetry,
   onReturnToHall,
 }: GameCrashScreenProps) {
-  const getGameDisplayName = (id: string) => {
-    const gameNames: Record<string, string> = {
-      minesweeper: "扫雷",
-      "2048": "2048",
-      tetris: "俄罗斯方块",
-    };
-    return gameNames[id] || id;
-  };
-
   const getErrorSuggestion = (error: Error) => {
     const message = error.message.toLowerCase();
 
@@ -112,7 +104,7 @@ function GameCrashScreen({
 
         {/* 错误标题 */}
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          {getGameDisplayName(gameId)} 崩溃了
+          {getGameChineseName(gameId)} 崩溃了
         </h2>
 
         {/* 错误描述 */}
