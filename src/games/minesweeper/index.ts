@@ -4,6 +4,7 @@
  */
 
 import { GameModule } from "@/types/game";
+import { scoreManager } from "@/lib/score-manager";
 import { MinesweeperEngine } from "./game";
 import { MinesweeperRenderer } from "./renderer";
 import { MinesweeperInputHandler } from "./input";
@@ -137,14 +138,34 @@ export class MinesweeperGame implements GameModule {
    * 处理游戏结束
    */
   private handleGameEnd(state: MinesweeperState): void {
-    // 这里可以添加游戏结束的处理逻辑
-    // 比如保存分数、显示结果等
-
     if (state.status === "won") {
       console.log(`游戏胜利！分数: ${state.score}`);
-      // TODO: 集成分数管理系统
+
+      // 保存分数到分数管理系统
+      scoreManager.saveScore(this.id, state.score, {
+        difficulty: state.config.difficulty,
+        timeElapsed:
+          state.endTime && state.startTime
+            ? state.endTime - state.startTime
+            : 0,
+        mineCount: state.config.mines,
+        boardSize: `${state.config.rows}x${state.config.cols}`,
+        status: "won",
+      });
     } else if (state.status === "lost") {
       console.log("游戏失败！");
+
+      // 即使失败也记录分数（为0分）
+      scoreManager.saveScore(this.id, 0, {
+        difficulty: state.config.difficulty,
+        timeElapsed:
+          state.endTime && state.startTime
+            ? state.endTime - state.startTime
+            : 0,
+        mineCount: state.config.mines,
+        boardSize: `${state.config.rows}x${state.config.cols}`,
+        status: "lost",
+      });
     }
   }
 
@@ -160,6 +181,20 @@ export class MinesweeperGame implements GameModule {
    */
   getGameStats() {
     return this.engine?.getGameStats() || null;
+  }
+
+  /**
+   * 获取当前最高分
+   */
+  getHighScore() {
+    return scoreManager.getHighScore(this.id);
+  }
+
+  /**
+   * 获取所有分数记录
+   */
+  getAllScores() {
+    return scoreManager.getAllScores(this.id);
   }
 
   /**

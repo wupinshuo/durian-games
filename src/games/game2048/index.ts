@@ -4,6 +4,7 @@
  */
 
 import { GameModule } from "@/types/game";
+import { scoreManager } from "@/lib/score-manager";
 import { Game2048Engine } from "./game";
 import { Game2048Renderer } from "./renderer";
 import { Game2048InputHandler } from "./input";
@@ -108,10 +109,22 @@ export class Game2048 implements GameModule {
   private handleGameEnd(state: Game2048State): void {
     if (state.status === "won") {
       console.log(`游戏胜利！分数: ${state.score}`);
-      // TODO: 集成分数管理系统
+
+      // 保存分数到分数管理系统
+      scoreManager.saveScore(this.id, state.score, {
+        bestTile: state.bestTile,
+        moveCount: state.moveCount,
+        status: "won",
+      });
     } else if (state.status === "lost") {
       console.log(`游戏结束！最终分数: ${state.score}`);
-      // TODO: 集成分数管理系统
+
+      // 保存分数到分数管理系统
+      scoreManager.saveScore(this.id, state.score, {
+        bestTile: state.bestTile,
+        moveCount: state.moveCount,
+        status: "lost",
+      });
     }
   }
 
@@ -127,6 +140,20 @@ export class Game2048 implements GameModule {
    */
   getGameStats() {
     return this.engine?.getGameStats() || null;
+  }
+
+  /**
+   * 获取当前最高分
+   */
+  getHighScore() {
+    return scoreManager.getHighScore(this.id);
+  }
+
+  /**
+   * 获取所有分数记录
+   */
+  getAllScores() {
+    return scoreManager.getAllScores(this.id);
   }
 
   /**

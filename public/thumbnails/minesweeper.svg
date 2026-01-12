@@ -1,0 +1,24 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="200" fill="#f0f0f0" stroke="#ccc" stroke-width="2"/>
+  <rect x="20" y="20" width="160" height="160" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+  
+  <!-- Grid pattern -->
+  <defs>
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <rect width="20" height="20" fill="#e0e0e0" stroke="#999" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+  <rect x="20" y="20" width="160" height="160" fill="url(#grid)"/>
+  
+  <!-- Mine symbol -->
+  <circle cx="100" cy="100" r="8" fill="#333"/>
+  <circle cx="100" cy="100" r="6" fill="#000"/>
+  <line x1="92" y1="100" x2="108" y2="100" stroke="#000" stroke-width="2"/>
+  <line x1="100" y1="92" x2="100" y2="108" stroke="#000" stroke-width="2"/>
+  <line x1="94" y1="94" x2="106" y2="106" stroke="#000" stroke-width="1"/>
+  <line x1="106" y1="94" x2="94" y2="106" stroke="#000" stroke-width="1"/>
+  
+  <!-- Numbers -->
+  <text x="60" y="75" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0000ff">1</text>
+  <text x="140" y="135" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#ff0000">2</text>
+</svg>

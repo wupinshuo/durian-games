@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { gameRegistry } from "@/lib/game-registry";
+import { scoreManager } from "@/lib/score-manager";
 import { GameMetadata } from "@/types/game";
 import { ResponsiveContainer, ResponsiveGrid } from "./responsive-layout";
 
@@ -187,6 +188,13 @@ function GameCard({
   getControlsText,
 }: GameCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [highScore, setHighScore] = useState<number | null>(null);
+
+  // 加载最高分
+  useEffect(() => {
+    const score = scoreManager.getHighScore(game.id);
+    setHighScore(score?.score || null);
+  }, [game.id]);
 
   return (
     <div
@@ -242,9 +250,16 @@ function GameCard({
           </span>
         </div>
 
-        {/* 控制方式 */}
-        <div className="text-xs text-gray-500">
-          支持: {getControlsText(game.controls)}
+        {/* 控制方式和最高分 */}
+        <div className="flex justify-between items-center text-xs">
+          <span className="text-gray-500">
+            支持: {getControlsText(game.controls)}
+          </span>
+          {highScore !== null && (
+            <span className="text-blue-600 font-medium">
+              最高: {highScore.toLocaleString()}
+            </span>
+          )}
         </div>
       </div>
     </div>

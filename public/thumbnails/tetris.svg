@@ -1,0 +1,55 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="200" fill="#000" stroke="#333" stroke-width="2"/>
+  
+  <!-- Game board -->
+  <rect x="20" y="20" width="120" height="160" fill="#111" stroke="#333" stroke-width="1"/>
+  
+  <!-- Grid lines -->
+  <defs>
+    <pattern id="tetris-grid" width="12" height="12" patternUnits="userSpaceOnUse">
+      <rect width="12" height="12" fill="#111" stroke="#222" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+  <rect x="20" y="20" width="120" height="160" fill="url(#tetris-grid)"/>
+  
+  <!-- Tetris pieces -->
+  <!-- I-piece (cyan) -->
+  <rect x="32" y="140" width="12" height="12" fill="#00f0f0" stroke="#00d0d0" stroke-width="1"/>
+  <rect x="44" y="140" width="12" height="12" fill="#00f0f0" stroke="#00d0d0" stroke-width="1"/>
+  <rect x="56" y="140" width="12" height="12" fill="#00f0f0" stroke="#00d0d0" stroke-width="1"/>
+  <rect x="68" y="140" width="12" height="12" fill="#00f0f0" stroke="#00d0d0" stroke-width="1"/>
+  
+  <!-- L-piece (orange) -->
+  <rect x="80" y="128" width="12" height="12" fill="#f0a000" stroke="#d08000" stroke-width="1"/>
+  <rect x="80" y="140" width="12" height="12" fill="#f0a000" stroke="#d08000" stroke-width="1"/>
+  <rect x="80" y="152" width="12" height="12" fill="#f0a000" stroke="#d08000" stroke-width="1"/>
+  <rect x="92" y="152" width="12" height="12" fill="#f0a000" stroke="#d08000" stroke-width="1"/>
+  
+  <!-- T-piece (purple) -->
+  <rect x="104" y="128" width="12" height="12" fill="#a000f0" stroke="#8000d0" stroke-width="1"/>
+  <rect x="116" y="128" width="12" height="12" fill="#a000f0" stroke="#8000d0" stroke-width="1"/>
+  <rect x="128" y="128" width="12" height="12" fill="#a000f0" stroke="#8000d0" stroke-width="1"/>
+  <rect x="116" y="140" width="12" height="12" fill="#a000f0" stroke="#8000d0" stroke-width="1"/>
+  
+  <!-- O-piece (yellow) -->
+  <rect x="32" y="164" width="12" height="12" fill="#f0f000" stroke="#d0d000" stroke-width="1"/>
+  <rect x="44" y="164" width="12" height="12" fill="#f0f000" stroke="#d0d000" stroke-width="1"/>
+  
+  <!-- S-piece (green) -->
+  <rect x="68" y="164" width="12" height="12" fill="#00f000" stroke="#00d000" stroke-width="1"/>
+  <rect x="80" y="164" width="12" height="12" fill="#00f000" stroke="#00d000" stroke-width="1"/>
+  
+  <!-- Z-piece (red) -->
+  <rect x="104" y="164" width="12" height="12" fill="#f00000" stroke="#d00000" stroke-width="1"/>
+  <rect x="116" y="164" width="12" height="12" fill="#f00000" stroke="#d00000" stroke-width="1"/>
+  
+  <!-- Next piece preview -->
+  <rect x="150" y="30" width="40" height="40" fill="#222" stroke="#444" stroke-width="1"/>
+  <text x="170" y="25" font-family="Arial, sans-serif" font-size="10" fill="#fff" text-anchor="middle">NEXT</text>
+  
+  <!-- Next piece (T-piece) -->
+  <rect x="158" y="42" width="6" height="6" fill="#a000f0"/>
+  <rect x="164" y="42" width="6" height="6" fill="#a000f0"/>
+  <rect x="170" y="42" width="6" height="6" fill="#a000f0"/>
+  <rect x="164" y="48" width="6" height="6" fill="#a000f0"/>
+</svg>

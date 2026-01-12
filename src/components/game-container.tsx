@@ -2,7 +2,8 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { GameContainerImpl } from "@/lib/game-container";
-import { GameLoadOptions } from "@/types/game";
+import { GameLoadOptions, GameScore } from "@/types/game";
+import { scoreManager } from "@/lib/score-manager";
 
 interface GameContainerProps {
   gameId: string;
@@ -23,6 +24,8 @@ export function GameContainer({
   const gameContainerRef = useRef<GameContainerImpl | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [highScore, setHighScore] = useState<GameScore | null>(null);
+  const [currentScore, setCurrentScore] = useState<number>(0);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -31,6 +34,10 @@ export function GameContainer({
       try {
         setIsLoading(true);
         setError(null);
+
+        // 加载最高分
+        const highScoreData = scoreManager.getHighScore(gameId);
+        setHighScore(highScoreData);
 
         // 创建游戏容器管理器
         if (!gameContainerRef.current && containerRef.current) {
@@ -74,6 +81,16 @@ export function GameContainer({
     };
   }, []);
 
+  // 定期更新最高分（每5秒检查一次）
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const latestHighScore = scoreManager.getHighScore(gameId);
+      setHighScore(latestHighScore);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [gameId]);
+
   // 重试加载游戏
   const retryLoad = () => {
     if (containerRef.current && gameContainerRef.current) {
@@ -106,21 +123,37 @@ export function GameContainer({
             )}
           </div>
 
-          <div className="flex items-center space-x-2">
-            {error && (
-              <button
-                onClick={retryLoad}
-                className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-              >
-                重试
-              </button>
+          <div className="flex items-center space-x-4">
+            {/* 分数显示 */}
+            {highScore && (
+              <div className="flex items-center space-x-4 text-sm">
+                <div className="text-gray-600">
+                  <span className="font-medium">最高分:</span>{" "}
+                  <span className="font-bold text-blue-600">
+                    {highScore.score.toLocaleString()}
+                  </span>
+                </div>
+              </div>
             )}
-            <button
-              onClick={onBackToHall}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
-            >
-              返回大厅
-            </button>
+
+            <div className="flex items-center space-x-2">
+              {error && (
+                <button
+                  type="button"
+                  onClick={retryLoad}
+                  className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                >
+                  重试
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={onBackToHall}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+              >
+                返回大厅
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -137,12 +170,14 @@ export function GameContainer({
               <p className="text-gray-600 mb-4 max-w-md">{error}</p>
               <div className="space-x-2">
                 <button
+                  type="button"
                   onClick={retryLoad}
                   className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
                 >
                   重新加载
                 </button>
                 <button
+                  type="button"
                   onClick={onBackToHall}
                   className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
                 >
