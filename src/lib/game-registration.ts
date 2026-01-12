@@ -20,14 +20,14 @@ gameRegistry.register(
   } as GameMetadata
 );
 
-// 注册2048游戏（占位符）
+// 注册2048游戏
 gameRegistry.register(
   "2048",
-  () => Promise.reject(new Error("2048游戏尚未实现")),
+  () => import("@/games/game2048").then((module) => module.default),
   {
     id: "2048",
     name: "2048",
-    description: "滑动数字方块，合并相同数字达到2048。支持撤销功能。",
+    description: "滑动数字方块，合并相同数字达到2048。",
     category: "益智",
     difficulty: "medium",
     controls: ["keyboard", "touch"],
