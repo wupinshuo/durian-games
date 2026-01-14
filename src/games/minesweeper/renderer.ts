@@ -30,6 +30,16 @@ export class MinesweeperRenderer {
   }
 
   /**
+   * 初始渲染（延迟以确保容器布局完成）
+   */
+  initialRender(state: MinesweeperState): void {
+    // 使用 requestAnimationFrame 确保容器已经完成布局
+    requestAnimationFrame(() => {
+      this.render(state);
+    });
+  }
+
+  /**
    * 创建游戏UI结构
    */
   private createGameUI(): void {
@@ -210,15 +220,7 @@ export class MinesweeperRenderer {
     const { rows, cols } = state.config;
 
     // 计算响应式单元格大小
-    const containerWidth = this.container.clientWidth - 32; // 减去padding
-    const containerHeight = this.container.clientHeight - 200; // 减去header高度
-
-    const maxCellWidth = Math.floor(containerWidth / cols);
-    const maxCellHeight = Math.floor(containerHeight / rows);
-    const cellSize = Math.max(
-      20,
-      Math.min(40, Math.min(maxCellWidth, maxCellHeight))
-    );
+    const cellSize = this.calculateCellSize(rows, cols);
 
     // 设置网格样式
     this.boardElement.className = `grid gap-1 border-2 border-gray-400 bg-gray-400 p-1 rounded-lg shadow-lg`;
@@ -239,6 +241,25 @@ export class MinesweeperRenderer {
         this.boardElement.appendChild(cellElement);
       }
     }
+  }
+
+  /**
+   * 计算单元格大小
+   */
+  private calculateCellSize(rows: number, cols: number): number {
+    // 获取容器的实际可用空间
+    const containerRect = this.container.getBoundingClientRect();
+    const containerWidth = containerRect.width - 32; // 减去padding
+
+    // 使用固定的header高度估算
+    const headerHeight = 200;
+    const containerHeight = Math.max(400, containerRect.height - headerHeight);
+
+    const maxCellWidth = Math.floor(containerWidth / cols);
+    const maxCellHeight = Math.floor(containerHeight / rows);
+
+    // 确保单元格大小在合理范围内
+    return Math.max(20, Math.min(40, Math.min(maxCellWidth, maxCellHeight)));
   }
 
   /**

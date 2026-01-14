@@ -71,8 +71,8 @@ export class MinesweeperGame implements GameModule {
     // 设置输入事件处理
     this.setupInputHandlers();
 
-    // 初始渲染
-    this.renderer.render(this.engine.getState());
+    // 初始渲染（延迟以确保容器布局完成）
+    this.renderer.initialRender(this.engine.getState());
   }
 
   /**
