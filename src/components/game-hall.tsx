@@ -139,64 +139,84 @@ export function GameHall({ onGameSelect }: GameHallProps) {
   }
 
   return (
-    <div className="flex-1 py-6">
-      <ResponsiveContainer size="xl">
-        {/* 页面标题 */}
-        <TransitionWrapper isVisible={!isTransitioning} type="slideUp">
-          <div className="text-center mb-6 md:mb-8">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-              游戏大厅
+    <div className="flex-1">
+      {/* Hero 区域 */}
+      <section className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-16">
+          <TransitionWrapper isVisible={!isTransitioning} type="slideUp">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">
+              畅玩经典小游戏!
             </h1>
-            <p className="text-gray-600 text-base sm:text-lg">
-              选择一个游戏开始游玩
+            <p className="text-base sm:text-lg text-blue-100 max-w-xl">
+              经典小游戏合集，随时随地，轻松畅玩。
             </p>
-          </div>
-        </TransitionWrapper>
+          </TransitionWrapper>
+        </div>
+      </section>
 
-        {/* 游戏列表 */}
-        <TransitionWrapper isVisible={!isTransitioning} type="fade">
-          {games.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="text-gray-400 text-6xl mb-4">🎮</div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                暂无可用游戏
+      {/* 游戏列表区域 */}
+      <ResponsiveContainer size="xl">
+        <div className="py-8 sm:py-12">
+          {/* 页面标题 */}
+          <TransitionWrapper isVisible={!isTransitioning} type="slideUp">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">
+              选择一个游戏
+            </h2>
+          </TransitionWrapper>
+
+          {/* 游戏列表 */}
+          <TransitionWrapper isVisible={!isTransitioning} type="fade">
+            {games.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="text-gray-400 text-6xl mb-4">🎮</div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                  暂无可用游戏
+                </h3>
+                <p className="text-gray-600">游戏正在开发中，敬请期待...</p>
+              </div>
+            ) : (
+              <ResponsiveGrid
+                cols={{ default: 1, xs: 1, sm: 2, md: 2, lg: 3, xl: 3 }}
+                gap={6}
+                className="mb-8 sm:mb-12"
+              >
+                {games.map((game, index) => (
+                  <TransitionWrapper
+                    key={game.id}
+                    isVisible={!isTransitioning}
+                    type="slideUp"
+                    duration={300 + index * 50}
+                  >
+                    <GameCard
+                      game={game}
+                      onSelect={handleGameSelect}
+                      getDifficultyColor={getDifficultyColor}
+                      getDifficultyText={getDifficultyText}
+                      getControlsText={getControlsText}
+                    />
+                  </TransitionWrapper>
+                ))}
+              </ResponsiveGrid>
+            )}
+          </TransitionWrapper>
+
+          {/* 即将上线区域 */}
+          <TransitionWrapper isVisible={!isTransitioning} type="fade">
+            <div className="mt-8 sm:mt-12">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-500 mb-3 sm:mb-4">
+                更多游戏即将上线…
               </h3>
-              <p className="text-gray-600">游戏正在开发中，敬请期待...</p>
-            </div>
-          ) : (
-            <ResponsiveGrid
-              cols={{ default: 1, xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }}
-              gap={4}
-              className="mb-6 md:mb-8"
-            >
-              {games.map((game, index) => (
-                <TransitionWrapper
-                  key={game.id}
-                  isVisible={!isTransitioning}
-                  type="slideUp"
-                  duration={300 + index * 50} // 错开动画时间
-                >
-                  <GameCard
-                    game={game}
-                    onSelect={handleGameSelect}
-                    getDifficultyColor={getDifficultyColor}
-                    getDifficultyText={getDifficultyText}
-                    getControlsText={getControlsText}
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className="h-24 sm:h-28 rounded-lg bg-slate-200 animate-pulse"
                   />
-                </TransitionWrapper>
-              ))}
-            </ResponsiveGrid>
-          )}
-        </TransitionWrapper>
-
-        {/* 底部提示 */}
-        <TransitionWrapper isVisible={!isTransitioning} type="fade">
-          <div className="text-center">
-            <p className="text-sm text-gray-500">
-              更多游戏正在开发中，敬请期待更多精彩内容！
-            </p>
-          </div>
-        </TransitionWrapper>
+                ))}
+              </div>
+            </div>
+          </TransitionWrapper>
+        </div>
       </ResponsiveContainer>
     </div>
   );
@@ -232,13 +252,13 @@ function GameCard({
 
   return (
     <div
-      className="relative bg-white rounded-lg shadow-md hover:shadow-lg transition-optimized cursor-pointer border border-gray-200 overflow-hidden group active:scale-95 gpu-accelerated"
+      className="relative bg-white rounded-xl shadow hover:shadow-xl transition-all duration-200 cursor-pointer overflow-hidden group active:scale-95 gpu-accelerated"
       onClick={() => onSelect(game.id)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* 游戏缩略图 */}
-      <div className="aspect-video bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center relative overflow-hidden">
+      <div className="h-36 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center relative overflow-hidden">
         {game.thumbnail ? (
           <img
             src={game.thumbnail}
@@ -247,55 +267,30 @@ function GameCard({
             loading="lazy"
           />
         ) : (
-          <div className="text-white text-3xl sm:text-4xl">🎮</div>
+          <div className="text-white text-4xl sm:text-5xl">🎮</div>
         )}
-
-        {/* 悬停覆盖层 - 在移动设备上始终显示 */}
-        <div
-          className={`absolute inset-0 bg-blue-500 bg-opacity-20 flex items-center justify-center transition-opacity duration-200 ${
-            isHovered ? "opacity-100" : "opacity-0 md:opacity-0"
-          } group-active:opacity-100`}
-        >
-          <span className="text-white font-semibold bg-blue-500 bg-opacity-90 px-3 py-2 sm:px-4 sm:py-2 rounded-md text-sm sm:text-base">
-            开始游戏
-          </span>
-        </div>
       </div>
 
       {/* 游戏信息 */}
-      <div className="p-3 sm:p-4">
+      <div className="p-4 sm:p-5">
         <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 line-clamp-1">
           {game.name}
         </h3>
-        <p className="text-gray-600 text-xs sm:text-sm mb-3 line-clamp-2 min-h-[2rem] sm:min-h-[2.5rem]">
+        <p className="text-gray-600 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2 min-h-[2.5rem]">
           {game.description}
         </p>
 
-        {/* 游戏标签 */}
-        <div className="flex flex-wrap gap-1 sm:gap-2 mb-2 sm:mb-3">
-          <span
-            className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(
-              game.difficulty
-            )}`}
-          >
-            {getDifficultyText(game.difficulty)}
-          </span>
-          <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-            {game.category}
-          </span>
-        </div>
-
-        {/* 控制方式和最高分 */}
-        <div className="flex justify-between items-center text-xs">
-          <span className="text-gray-500">
-            支持: {getControlsText(game.controls)}
-          </span>
-          {highScore !== null && (
-            <span className="text-blue-600 font-medium">
-              最高: {highScore.toLocaleString()}
-            </span>
-          )}
-        </div>
+        {/* 开始游戏按钮 */}
+        <button
+          type="button"
+          className="w-full rounded-lg bg-blue-500 py-2 font-semibold text-white text-sm sm:text-base hover:bg-blue-600 transition-colors"
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelect(game.id);
+          }}
+        >
+          开始游戏
+        </button>
       </div>
     </div>
   );

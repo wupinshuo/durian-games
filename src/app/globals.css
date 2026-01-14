@@ -40,6 +40,7 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+  min-width: 320px;
 }
 
 @layer utilities {
@@ -54,17 +55,15 @@ body {
 }
 
 .game-card {
-  @apply bg-white rounded-lg shadow-md hover:shadow-lg transition-optimized cursor-pointer border border-gray-200 gpu-accelerated;
+  @apply bg-white rounded-xl shadow hover:shadow-xl transition-all duration-200 cursor-pointer overflow-hidden;
 }
 
 .game-card:hover {
-  @apply transform transition-optimized;
-  transform: translateY(-2px) translateZ(0);
+  transform: translateY(-4px);
 }
 
 .game-card:active {
-  @apply transform;
-  transform: translateY(0) scale(0.98) translateZ(0);
+  transform: scale(0.95);
 }
 
 /* 游戏大厅网格布局 */

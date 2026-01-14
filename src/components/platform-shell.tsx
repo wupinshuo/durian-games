@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { GameContainer } from "./game-container";
 import { Navigation } from "./navigation";
 import { GameHall } from "./game-hall";
+import { Footer } from "./footer";
 import { PlatformErrorBoundary } from "./platform-error-boundary";
 import { GameErrorBoundary } from "./game-error-boundary";
 import { PageTransition } from "./transition-wrapper";
@@ -55,7 +56,7 @@ export function PlatformShell() {
 
   return (
     <PlatformErrorBoundary>
-      <div className="min-h-screen bg-gray-50 flex flex-col">
+      <div className="min-h-screen bg-slate-50 flex flex-col">
         {/* 顶部导航栏 */}
         <Navigation
           currentView={currentView}
@@ -84,11 +85,7 @@ export function PlatformShell() {
         </main>
 
         {/* 底部信息栏 */}
-        <footer className="bg-white border-t border-gray-200 p-3 sm:p-4">
-          <div className="max-w-6xl mx-auto text-center text-xs sm:text-sm text-gray-500">
-            网页游戏平台 - 在线游戏体验
-          </div>
-        </footer>
+        <Footer />
       </div>
     </PlatformErrorBoundary>
   );

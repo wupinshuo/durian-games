@@ -2,6 +2,7 @@ export { PlatformShell } from "./platform-shell";
 export { Navigation } from "./navigation";
 export { GameContainer } from "./game-container";
 export { GameHall } from "./game-hall";
+export { Footer } from "./footer";
 export {
   ResponsiveLayout,
   ResponsiveGrid,

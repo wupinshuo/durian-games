@@ -37,46 +37,56 @@ export function Navigation({
 
   return (
     <>
-      <nav className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+      <nav className="bg-slate-900 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex justify-between items-center h-14 sm:h-16">
-            {/* 左侧：平台标题和导航 */}
-            <div className="flex items-center space-x-2 sm:space-x-4">
+            {/* 左侧：平台标题 */}
+            <div className="flex items-center gap-2 sm:gap-3">
               <button
                 type="button"
                 onClick={handleNavigateToHall}
-                className="text-lg sm:text-xl font-bold text-gray-900 hover:text-blue-600 transition-colors"
+                className="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity"
               >
-                🎮 在线小游戏平台
+                <span className="text-xl sm:text-2xl">🎮</span>
+                <span className="text-base sm:text-xl font-bold">
+                  在线小游戏平台
+                </span>
               </button>
-
-              {currentView === "game" && (
-                <div className="hidden sm:flex items-center space-x-2 text-sm text-gray-500">
-                  <span>/</span>
-                  <span>
-                    {currentGameId ? getGameChineseName(currentGameId) : "游戏"}
-                  </span>
-                </div>
-              )}
             </div>
 
-            {/* 右侧：操作按钮 */}
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              {/* 桌面端返回按钮 */}
-              {currentView === "game" && (
+            {/* 右侧：导航链接 */}
+            <div className="flex items-center gap-4 sm:gap-6">
+              {/* 桌面端导航 */}
+              <nav className="hidden md:flex gap-4 sm:gap-6">
                 <button
                   type="button"
                   onClick={handleNavigateToHall}
-                  className="hidden sm:block px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+                  className={`text-sm transition-colors ${
+                    currentView === "hall"
+                      ? "text-white"
+                      : "text-slate-300 hover:text-white"
+                  }`}
                 >
-                  返回大厅
+                  首页
                 </button>
-              )}
+                <a
+                  href="#"
+                  className="text-slate-300 hover:text-white text-sm transition-colors"
+                >
+                  排行榜
+                </a>
+                <a
+                  href="#"
+                  className="text-slate-300 hover:text-white text-sm transition-colors"
+                >
+                  关于
+                </a>
+              </nav>
 
               {/* 移动端菜单按钮 */}
               <button
                 type="button"
-                className="sm:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
+                className="md:hidden p-2 rounded-md text-slate-300 hover:text-white hover:bg-slate-800"
                 onClick={toggleMobileMenu}
                 title="菜单"
                 aria-label="打开菜单"
@@ -108,9 +118,27 @@ export function Navigation({
           <button
             type="button"
             onClick={handleNavigateToHall}
+            className={`w-full text-left px-4 py-2 rounded-md transition-colors ${
+              currentView === "hall"
+                ? "bg-blue-50 text-blue-600 font-medium"
+                : "text-gray-700 hover:bg-gray-100"
+            }`}
+          >
+            首页
+          </button>
+
+          <button
+            type="button"
             className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
           >
-            🏠 游戏大厅
+            排行榜
+          </button>
+
+          <button
+            type="button"
+            className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+          >
+            关于
           </button>
 
           {currentView === "game" && currentGameId && (
@@ -124,7 +152,7 @@ export function Navigation({
                 onClick={handleNavigateToHall}
                 className="mt-2 w-full px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 transition-colors"
               >
-                返回大厅
+                返回首页
               </button>
             </div>
           )}
