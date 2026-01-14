@@ -7,6 +7,11 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "网页游戏平台",
   description: "一个模块化的网页游戏平台，提供经典小游戏",
+  icons: {
+    icon: "/durian_logo.svg",
+    shortcut: "/durian_logo.svg",
+    apple: "/durian_logo.svg",
+  },
 };
 
 export default function RootLayout({

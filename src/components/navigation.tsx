@@ -47,7 +47,7 @@ export function Navigation({
                 onClick={handleNavigateToHall}
                 className="text-lg sm:text-xl font-bold text-gray-900 hover:text-blue-600 transition-colors"
               >
-                🎮 游戏平台
+                🎮 在线小游戏平台
               </button>
 
               {currentView === "game" && (

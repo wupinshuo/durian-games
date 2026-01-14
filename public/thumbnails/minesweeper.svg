@@ -1,24 +1,60 @@
 <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-  <rect width="200" height="200" fill="#f0f0f0" stroke="#ccc" stroke-width="2"/>
-  <rect x="20" y="20" width="160" height="160" fill="#e0e0e0" stroke="#999" stroke-width="1"/>
+  <!-- Background -->
+  <rect width="200" height="200" fill="#f8f9fa" rx="10"/>
   
-  <!-- Grid pattern -->
-  <defs>
-    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-      <rect width="20" height="20" fill="#e0e0e0" stroke="#999" stroke-width="0.5"/>
-    </pattern>
-  </defs>
-  <rect x="20" y="20" width="160" height="160" fill="url(#grid)"/>
+  <!-- Game board shadow -->
+  <rect x="25" y="25" width="150" height="150" fill="#000" opacity="0.1" rx="8" transform="translate(3, 3)"/>
   
-  <!-- Mine symbol -->
-  <circle cx="100" cy="100" r="8" fill="#333"/>
-  <circle cx="100" cy="100" r="6" fill="#000"/>
-  <line x1="92" y1="100" x2="108" y2="100" stroke="#000" stroke-width="2"/>
-  <line x1="100" y1="92" x2="100" y2="108" stroke="#000" stroke-width="2"/>
-  <line x1="94" y1="94" x2="106" y2="106" stroke="#000" stroke-width="1"/>
-  <line x1="106" y1="94" x2="94" y2="106" stroke="#000" stroke-width="1"/>
+  <!-- Game board -->
+  <rect x="25" y="25" width="150" height="150" fill="#ffffff" stroke="#dee2e6" stroke-width="2" rx="8"/>
   
-  <!-- Numbers -->
-  <text x="60" y="75" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0000ff">1</text>
-  <text x="140" y="135" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#ff0000">2</text>
+  <!-- Grid cells -->
+  <g id="cells">
+    <!-- Revealed cells with numbers -->
+    <rect x="35" y="35" width="40" height="40" fill="#e9ecef" stroke="#adb5bd" stroke-width="1" rx="2"/>
+    <text x="55" y="62" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1971c2" text-anchor="middle">1</text>
+    
+    <rect x="85" y="35" width="40" height="40" fill="#e9ecef" stroke="#adb5bd" stroke-width="1" rx="2"/>
+    <text x="105" y="62" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#2f9e44" text-anchor="middle">2</text>
+    
+    <rect x="35" y="85" width="40" height="40" fill="#e9ecef" stroke="#adb5bd" stroke-width="1" rx="2"/>
+    <text x="55" y="112" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#e03131" text-anchor="middle">3</text>
+    
+    <!-- Hidden cells -->
+    <rect x="135" y="35" width="40" height="40" fill="#ced4da" stroke="#868e96" stroke-width="1" rx="2">
+      <animate attributeName="fill" values="#ced4da;#adb5bd;#ced4da" dur="2s" repeatCount="indefinite"/>
+    </rect>
+    
+    <rect x="85" y="85" width="40" height="40" fill="#ced4da" stroke="#868e96" stroke-width="1" rx="2"/>
+    
+    <rect x="135" y="85" width="40" height="40" fill="#ced4da" stroke="#868e96" stroke-width="1" rx="2"/>
+    
+    <!-- Flagged cell -->
+    <rect x="35" y="135" width="40" height="40" fill="#fff3bf" stroke="#ffd43b" stroke-width="2" rx="2"/>
+    <g transform="translate(55, 145)">
+      <polygon points="0,5 0,25 12,15" fill="#fa5252"/>
+      <line x1="0" y1="5" x2="0" y2="25" stroke="#c92a2a" stroke-width="1.5"/>
+    </g>
+    
+    <!-- Mine cell (revealed) -->
+    <rect x="85" y="135" width="40" height="40" fill="#ffe3e3" stroke="#ff6b6b" stroke-width="2" rx="2"/>
+    <g transform="translate(105, 155)">
+      <circle r="8" fill="#212529"/>
+      <circle r="6" fill="#495057"/>
+      <line x1="-10" y1="0" x2="10" y2="0" stroke="#212529" stroke-width="2"/>
+      <line x1="0" y1="-10" x2="0" y2="10" stroke="#212529" stroke-width="2"/>
+      <line x1="-7" y1="-7" x2="7" y2="7" stroke="#212529" stroke-width="1.5"/>
+      <line x1="7" y1="-7" x2="-7" y2="7" stroke="#212529" stroke-width="1.5"/>
+      <circle cx="2" cy="-2" r="2" fill="#ffffff" opacity="0.6"/>
+    </g>
+    
+    <!-- Hidden cell -->
+    <rect x="135" y="135" width="40" height="40" fill="#ced4da" stroke="#868e96" stroke-width="1" rx="2"/>
+  </g>
+  
+  <!-- Decorative corner icon -->
+  <g transform="translate(165, 15)">
+    <circle r="12" fill="#fa5252" opacity="0.9"/>
+    <text x="0" y="5" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">💣</text>
+  </g>
 </svg>
