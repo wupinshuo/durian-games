@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { MobileMenu } from "./responsive-layout";
 import { getGameChineseName } from "@/lib/game-names";
+import { AboutModal } from "./about-modal";
 
 interface NavigationProps {
   currentView: "hall" | "game";
@@ -21,6 +22,7 @@ export function Navigation({
   onNavigateToHall,
 }: NavigationProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -33,6 +35,15 @@ export function Navigation({
   const handleNavigateToHall = () => {
     onNavigateToHall();
     closeMobileMenu();
+  };
+
+  const handleOpenAbout = () => {
+    setIsAboutModalOpen(true);
+    closeMobileMenu();
+  };
+
+  const handleCloseAbout = () => {
+    setIsAboutModalOpen(false);
   };
 
   return (
@@ -75,12 +86,13 @@ export function Navigation({
                 >
                   排行榜
                 </a>
-                <a
-                  href="#"
+                <button
+                  type="button"
+                  onClick={handleOpenAbout}
                   className="text-slate-300 hover:text-white text-sm transition-colors"
                 >
                   关于
-                </a>
+                </button>
               </nav>
 
               {/* 移动端菜单按钮 */}
@@ -136,6 +148,7 @@ export function Navigation({
 
           <button
             type="button"
+            onClick={handleOpenAbout}
             className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
           >
             关于
@@ -158,6 +171,9 @@ export function Navigation({
           )}
         </div>
       </MobileMenu>
+
+      {/* 关于弹窗 */}
+      <AboutModal isOpen={isAboutModalOpen} onClose={handleCloseAbout} />
     </>
   );
 }

@@ -3,6 +3,7 @@ export { Navigation } from "./navigation";
 export { GameContainer } from "./game-container";
 export { GameHall } from "./game-hall";
 export { Footer } from "./footer";
+export { AboutModal } from "./about-modal";
 export {
   ResponsiveLayout,
   ResponsiveGrid,
