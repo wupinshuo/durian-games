@@ -51,7 +51,7 @@ export class MinesweeperInputHandler {
       passive: false,
     });
 
-    // 触摸事件
+    // 触摸事件 - 使用 passive: false 以便在需要时可以阻止默认行为
     this.container.addEventListener(
       "touchstart",
       this.handleTouchStart.bind(this),
@@ -70,7 +70,7 @@ export class MinesweeperInputHandler {
     this.container.addEventListener(
       "touchcancel",
       this.handleTouchCancel.bind(this),
-      { passive: false }
+      { passive: true }
     );
 
     // 键盘事件
@@ -161,8 +161,6 @@ export class MinesweeperInputHandler {
    * 处理触摸开始事件
    */
   private handleTouchStart(event: TouchEvent): void {
-    event.preventDefault();
-
     if (event.touches.length !== 1) return;
 
     this.touchStartTime = Date.now();
@@ -178,6 +176,7 @@ export class MinesweeperInputHandler {
       element &&
       (element.id === "restart-btn" || element.closest("#restart-btn"))
     ) {
+      event.preventDefault();
       element.classList.add("active:bg-blue-700");
       return;
     }
@@ -187,6 +186,7 @@ export class MinesweeperInputHandler {
       (element.classList.contains("difficulty-btn") ||
         element.closest(".difficulty-btn"))
     ) {
+      event.preventDefault();
       const btn = element.classList.contains("difficulty-btn")
         ? element
         : (element.closest(".difficulty-btn") as HTMLElement);
@@ -197,6 +197,9 @@ export class MinesweeperInputHandler {
     // 处理游戏单元格的触摸
     const cellInfo = this.getCellFromTouch(touch);
     if (cellInfo) {
+      // 只在触摸游戏单元格时阻止默认行为
+      event.preventDefault();
+
       // 设置长按定时器
       this.longPressTimer = window.setTimeout(() => {
         // 添加触觉反馈（如果支持）
@@ -207,14 +210,13 @@ export class MinesweeperInputHandler {
         this.longPressTimer = null;
       }, this.LONG_PRESS_DURATION);
     }
+    // 如果不是游戏单元格或按钮，允许默认的滚动行为
   }
 
   /**
    * 处理触摸结束事件
    */
   private handleTouchEnd(event: TouchEvent): void {
-    event.preventDefault();
-
     // 清除长按定时器
     if (this.longPressTimer) {
       clearTimeout(this.longPressTimer);
@@ -235,6 +237,7 @@ export class MinesweeperInputHandler {
         element &&
         (element.id === "restart-btn" || element.closest("#restart-btn"))
       ) {
+        event.preventDefault();
         if (
           element === this.lastTouchTarget ||
           element.closest("#restart-btn") ===
@@ -242,6 +245,7 @@ export class MinesweeperInputHandler {
         ) {
           this.onRestart?.();
         }
+        this.lastTouchTarget = null;
         return;
       }
 
@@ -250,6 +254,7 @@ export class MinesweeperInputHandler {
         (element.classList.contains("difficulty-btn") ||
           element.closest(".difficulty-btn"))
       ) {
+        event.preventDefault();
         const btn = element.classList.contains("difficulty-btn")
           ? element
           : (element.closest(".difficulty-btn") as HTMLElement);
@@ -263,6 +268,7 @@ export class MinesweeperInputHandler {
             this.onDifficultyChange?.(difficulty);
           }
         }
+        this.lastTouchTarget = null;
         return;
       }
 
@@ -270,6 +276,7 @@ export class MinesweeperInputHandler {
       if (touchDuration < this.LONG_PRESS_DURATION) {
         const cellInfo = this.getCellFromTouch(touch);
         if (cellInfo) {
+          event.preventDefault();
           this.onLeftClick?.(cellInfo.row, cellInfo.col);
         }
       }
@@ -295,15 +302,17 @@ export class MinesweeperInputHandler {
         clearTimeout(this.longPressTimer);
         this.longPressTimer = null;
       }
+
+      // 如果正在长按游戏单元格，阻止滚动
+      event.preventDefault();
     }
+    // 否则允许默认的滚动行为
   }
 
   /**
    * 处理触摸取消事件
    */
   private handleTouchCancel(event: TouchEvent): void {
-    event.preventDefault();
-
     // 清除长按定时器
     if (this.longPressTimer) {
       clearTimeout(this.longPressTimer);
