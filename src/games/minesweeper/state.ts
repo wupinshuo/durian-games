@@ -17,6 +17,7 @@ import {
 export class MinesweeperStateManager {
   private state: MinesweeperState;
   private listeners: Array<(state: MinesweeperState) => void> = [];
+  private readonly STORAGE_KEY = "minesweeper-best-times";
 
   constructor(config: GameConfig = DIFFICULTY_CONFIGS.beginner) {
     this.state = this.createInitialState(config);
@@ -69,6 +70,7 @@ export class MinesweeperStateManager {
       startTime: null,
       endTime: null,
       score: 0,
+      bestTime: this.getBestTime(config.difficulty),
     };
   }
 
@@ -148,7 +150,7 @@ export class MinesweeperStateManager {
         if (!this.state.board[row][col].isMine) {
           this.state.board[row][col].neighborMines = this.countNeighborMines(
             row,
-            col
+            col,
           );
         }
       }
@@ -290,6 +292,7 @@ export class MinesweeperStateManager {
       this.state.status = "won";
       this.state.endTime = Date.now();
       this.calculateScore();
+      this.updateBestTime();
     }
   }
 
@@ -301,7 +304,7 @@ export class MinesweeperStateManager {
 
     const timeBonus = Math.max(
       0,
-      1000 - Math.floor((this.state.endTime - this.state.startTime) / 1000)
+      1000 - Math.floor((this.state.endTime - this.state.startTime) / 1000),
     );
     const difficultyMultiplier = this.getDifficultyMultiplier();
 
@@ -351,5 +354,54 @@ export class MinesweeperStateManager {
    */
   destroy(): void {
     this.listeners = [];
+  }
+
+  /**
+   * 获取最佳时间
+   */
+  private getBestTime(difficulty: string): number | null {
+    try {
+      if (typeof window === "undefined") return null;
+
+      const stored = localStorage.getItem(this.STORAGE_KEY);
+      if (!stored) return null;
+
+      const bestTimes = JSON.parse(stored);
+      return bestTimes[difficulty] || null;
+    } catch (error) {
+      console.warn("Failed to load best time:", error);
+      return null;
+    }
+  }
+
+  /**
+   * 更新最佳时间
+   */
+  private updateBestTime(): void {
+    if (!this.state.startTime || !this.state.endTime) return;
+
+    const currentTime = Math.floor(
+      (this.state.endTime - this.state.startTime) / 1000,
+    );
+    const difficulty = this.state.config.difficulty;
+
+    // 只为预定义难度保存最佳时间
+    if (difficulty === "custom") return;
+
+    try {
+      if (typeof window === "undefined") return;
+
+      const stored = localStorage.getItem(this.STORAGE_KEY);
+      const bestTimes = stored ? JSON.parse(stored) : {};
+
+      // 如果没有记录或当前时间更短，则更新
+      if (!bestTimes[difficulty] || currentTime < bestTimes[difficulty]) {
+        bestTimes[difficulty] = currentTime;
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(bestTimes));
+        this.state.bestTime = currentTime;
+      }
+    } catch (error) {
+      console.error("Failed to save best time:", error);
+    }
   }
 }

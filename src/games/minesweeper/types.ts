@@ -57,6 +57,8 @@ export interface MinesweeperState {
   endTime: number | null;
   /** 当前分数 */
   score: number;
+  /** 当前难度的最佳时间（秒） */
+  bestTime: number | null;
 }
 
 /** 预定义难度配置 */

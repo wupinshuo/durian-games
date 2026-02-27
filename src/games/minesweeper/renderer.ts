@@ -60,6 +60,10 @@ export class MinesweeperRenderer {
               <span class="text-blue-600 font-bold text-lg">⏱️</span>
               <span class="timer font-mono text-lg font-bold" id="game-timer">000</span>
             </div>
+            <div class="best-time-info flex items-center gap-2">
+              <span class="text-yellow-600 font-bold text-lg">🏆</span>
+              <span class="best-time font-mono text-lg font-bold" id="best-time">---</span>
+            </div>
           </div>
           
           <div class="game-status">
@@ -120,10 +124,25 @@ export class MinesweeperRenderer {
     const minesRemainingElement =
       this.gameElement.querySelector("#mines-remaining");
     const gameStatusElement = this.gameElement.querySelector("#game-status");
+    const bestTimeElement = this.gameElement.querySelector("#best-time");
 
     if (minesRemainingElement) {
       const remaining = Math.max(0, state.remainingMines);
       minesRemainingElement.textContent = remaining.toString().padStart(3, "0");
+    }
+
+    if (bestTimeElement) {
+      if (state.bestTime !== null) {
+        bestTimeElement.textContent = state.bestTime
+          .toString()
+          .padStart(3, "0");
+        bestTimeElement.className =
+          "best-time font-mono text-lg font-bold text-yellow-600";
+      } else {
+        bestTimeElement.textContent = "---";
+        bestTimeElement.className =
+          "best-time font-mono text-lg font-bold text-gray-400";
+      }
     }
 
     if (gameStatusElement) {
@@ -140,7 +159,14 @@ export class MinesweeperRenderer {
           statusClass = "text-blue-600";
           break;
         case "won":
-          statusText = `🎉 胜利！分数: ${state.score}`;
+          const currentTime =
+            state.startTime && state.endTime
+              ? Math.floor((state.endTime - state.startTime) / 1000)
+              : 0;
+          const isNewRecord = state.bestTime === currentTime && currentTime > 0;
+          statusText = isNewRecord
+            ? `🎉 胜利！新纪录: ${currentTime}秒 (分数: ${state.score})`
+            : `🎉 胜利！用时: ${currentTime}秒 (分数: ${state.score})`;
           statusClass = "text-green-600";
           break;
         case "lost":
@@ -177,7 +203,7 @@ export class MinesweeperRenderer {
       this.timerInterval = window.setInterval(() => {
         if (state.startTime && state.status === "playing") {
           const currentSeconds = Math.floor(
-            (Date.now() - state.startTime) / 1000
+            (Date.now() - state.startTime) / 1000,
           );
           timerElement.textContent = Math.min(999, currentSeconds)
             .toString()
@@ -236,7 +262,7 @@ export class MinesweeperRenderer {
         const cellElement = this.createCellElement(
           cell,
           cellSize,
-          state.status
+          state.status,
         );
         this.boardElement.appendChild(cellElement);
       }
@@ -268,7 +294,7 @@ export class MinesweeperRenderer {
   private createCellElement(
     cell: Cell,
     size: number,
-    gameStatus: string
+    gameStatus: string,
   ): HTMLElement {
     const cellElement = document.createElement("div");
     cellElement.className =
