@@ -323,6 +323,8 @@ export class MinesweeperStateManager {
         return 2;
       case "expert":
         return 3;
+      case "extreme":
+        return 5;
       default:
         return 1;
     }

@@ -3,7 +3,12 @@
  */
 
 /** 游戏难度级别 */
-export type Difficulty = "beginner" | "intermediate" | "expert" | "custom";
+export type Difficulty =
+  | "beginner"
+  | "intermediate"
+  | "expert"
+  | "extreme"
+  | "custom";
 
 /** 游戏状态 */
 export type GameStatus = "idle" | "playing" | "won" | "lost";
@@ -83,6 +88,12 @@ export const DIFFICULTY_CONFIGS: Record<
     cols: 30,
     mines: 99,
     difficulty: "expert",
+  },
+  extreme: {
+    rows: 50,
+    cols: 50,
+    mines: 500,
+    difficulty: "extreme",
   },
 };
 

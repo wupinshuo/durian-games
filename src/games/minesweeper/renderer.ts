@@ -89,23 +89,26 @@ export class MinesweeperRenderer {
             <button class="difficulty-btn px-3 py-1 text-sm rounded-md border transition-colors" data-difficulty="expert">
               高级 (16×30)
             </button>
+            <button class="difficulty-btn px-3 py-1 text-sm rounded-md border transition-colors" data-difficulty="extreme">
+              超高级 (50×50)
+            </button>
           </div>
         </div>
       </div>
       
       <div class="game-board-container flex-1 p-4 overflow-auto min-h-0">
-        <div class="flex flex-col items-center justify-center min-h-full">
-          <div id="game-board" class="game-board"></div>
-          
-          <!-- 游戏说明 -->
-          <div class="game-instructions mt-4 text-sm text-gray-600 max-w-md text-center">
-            <p class="mb-2"><strong>操作说明：</strong></p>
-            <div class="text-left space-y-1">
-              <p>• <strong>左键点击</strong>：揭示单元格</p>
-              <p>• <strong>右键点击</strong>：标记/取消标记地雷</p>
-              <p>• <strong>触摸设备</strong>：短按揭示，长按标记</p>
-              <p>• <strong>快捷键</strong>：F2 或 Ctrl+R 重新开始</p>
-            </div>
+        <div class="flex items-center justify-center min-h-full w-full">
+          <div id="game-board" class="game-board mx-auto"></div>
+        </div>
+        
+        <!-- 游戏说明 -->
+        <div class="game-instructions mt-4 text-sm text-gray-600 max-w-md mx-auto text-center">
+          <p class="mb-2"><strong>操作说明：</strong></p>
+          <div class="text-left space-y-1">
+            <p>• <strong>左键点击</strong>：揭示单元格</p>
+            <p>• <strong>右键点击</strong>：标记/取消标记地雷</p>
+            <p>• <strong>触摸设备</strong>：短按揭示，长按标记</p>
+            <p>• <strong>快捷键</strong>：F2 或 Ctrl+R 重新开始</p>
           </div>
         </div>
       </div>
@@ -133,9 +136,7 @@ export class MinesweeperRenderer {
 
     if (bestTimeElement) {
       if (state.bestTime !== null) {
-        bestTimeElement.textContent = state.bestTime
-          .toString()
-          .padStart(3, "0");
+        bestTimeElement.textContent = this.formatTime(state.bestTime);
         bestTimeElement.className =
           "best-time font-mono text-lg font-bold text-yellow-600";
       } else {
@@ -164,9 +165,10 @@ export class MinesweeperRenderer {
               ? Math.floor((state.endTime - state.startTime) / 1000)
               : 0;
           const isNewRecord = state.bestTime === currentTime && currentTime > 0;
+          const timeStr = this.formatTime(currentTime);
           statusText = isNewRecord
-            ? `🎉 胜利！新纪录: ${currentTime}秒 (分数: ${state.score})`
-            : `🎉 胜利！用时: ${currentTime}秒 (分数: ${state.score})`;
+            ? `🎉 胜利！新纪录: ${timeStr} (分数: ${state.score})`
+            : `🎉 胜利！用时: ${timeStr} (分数: ${state.score})`;
           statusClass = "text-green-600";
           break;
         case "lost":
@@ -194,9 +196,7 @@ export class MinesweeperRenderer {
       seconds = Math.floor((endTime - state.startTime) / 1000);
     }
 
-    timerElement.textContent = Math.min(999, seconds)
-      .toString()
-      .padStart(3, "0");
+    timerElement.textContent = this.formatTime(seconds);
 
     // 管理计时器
     if (state.status === "playing" && !this.timerInterval) {
@@ -205,14 +205,27 @@ export class MinesweeperRenderer {
           const currentSeconds = Math.floor(
             (Date.now() - state.startTime) / 1000,
           );
-          timerElement.textContent = Math.min(999, currentSeconds)
-            .toString()
-            .padStart(3, "0");
+          timerElement.textContent = this.formatTime(currentSeconds);
         }
       }, 1000);
     } else if (state.status !== "playing" && this.timerInterval) {
       clearInterval(this.timerInterval);
       this.timerInterval = null;
+    }
+  }
+
+  /**
+   * 格式化时间为 MM:SS 或 HH:MM:SS
+   */
+  private formatTime(totalSeconds: number): string {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    if (hours > 0) {
+      return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+    } else {
+      return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
     }
   }
 
@@ -249,7 +262,7 @@ export class MinesweeperRenderer {
     const cellSize = this.calculateCellSize(rows, cols);
 
     // 设置网格样式
-    this.boardElement.className = `grid gap-1 border-2 border-gray-400 bg-gray-400 p-1 rounded-lg shadow-lg`;
+    this.boardElement.className = `grid gap-1 border-2 border-gray-400 bg-gray-400 p-1 rounded-lg shadow-lg inline-grid`;
     this.boardElement.style.gridTemplateColumns = `repeat(${cols}, ${cellSize}px)`;
     this.boardElement.style.gridTemplateRows = `repeat(${rows}, ${cellSize}px)`;
 
@@ -275,17 +288,26 @@ export class MinesweeperRenderer {
   private calculateCellSize(rows: number, cols: number): number {
     // 获取容器的实际可用空间
     const containerRect = this.container.getBoundingClientRect();
-    const containerWidth = containerRect.width - 32; // 减去padding
+    const containerWidth = containerRect.width - 64; // 减去padding和边距
 
     // 使用固定的header高度估算
     const headerHeight = 200;
-    const containerHeight = Math.max(400, containerRect.height - headerHeight);
+    const containerHeight = Math.max(
+      400,
+      containerRect.height - headerHeight - 64,
+    );
 
     const maxCellWidth = Math.floor(containerWidth / cols);
     const maxCellHeight = Math.floor(containerHeight / rows);
 
-    // 确保单元格大小在合理范围内
-    return Math.max(20, Math.min(40, Math.min(maxCellWidth, maxCellHeight)));
+    // 确保单元格大小在合理范围内，超高级难度使用更小的单元格
+    const minSize = rows > 30 || cols > 30 ? 12 : 20;
+    const maxSize = rows > 30 || cols > 30 ? 20 : 40;
+
+    return Math.max(
+      minSize,
+      Math.min(maxSize, Math.min(maxCellWidth, maxCellHeight)),
+    );
   }
 
   /**
